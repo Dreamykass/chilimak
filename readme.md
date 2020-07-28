@@ -1,11 +1,12 @@
 
 # chilimak
 
-This will hopefully some day be a compiler for kasserole, targeting LLVM (?).
+This will hopefully some day be a compiler for kasserole, targeting LLVM.
 
-Parts of the compiler:
+Steps of the compiler:
 
-0. driver - drives the compiler, running each part of the pipeline
-1. pretokenizer - reads source and "stringifies" it, essentially transforming it into a list of strings
-2. tokenizer - interprets the list of strings into tokens (type name, variable name, string literal, comma, star, ampersand, bracket, etc)
-3. ;
+0. kitchen - drives the compiler, running each step
+1. tokenizer - reads source and stringifies it into a list of strings, and then interprets that into tokens (keywords, identifiers, symbols, brackets, etc)
+2. parser -
+
+Development will happen on the branches.

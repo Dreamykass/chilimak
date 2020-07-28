@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>p01_pretokenizer</RootNamespace>
+    <RootNamespace>tokenizer</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Tomlyn" Version="0.1.2" />
