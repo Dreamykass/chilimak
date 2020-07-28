@@ -1,0 +1,22 @@
+
+# general rcodes
+000 = "Success."
+001 = "Unknown failure."
+002 = "Terminated without specifying an ecode."
+003 = "Terminated but couldn't find or open return-codes.toml."
+004 = "Given Chilimak directory isn't valid."
+005 = "Given Chilimak directory is valid, but doesn't contain chilimak_dir_beacon."
+006 = "Error or exception when reading or parsing return-codes.toml."
+007 = "Couldn't find an error code in return-codes.toml."
+011 = "Can't find"
+
+# driver rcodes
+100 = "No args given - printed usage."
+
+# lexer rcodes
+
+
+# parser rcodes
+
+
+# generator rcodes

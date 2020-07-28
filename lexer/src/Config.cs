@@ -9,7 +9,7 @@ namespace Pretokenizer
         public enum VerbosityLevel
         {
             Silent,
-            Basic,
+            Normal,
             Full,
         }
 
