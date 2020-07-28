@@ -24,13 +24,11 @@ namespace Pretokenizer
 
         public Config(string[] args)
         {
-            if (args.Length == 0)
-                InitFromConfig();
-            else
-                InitFromArgs(args);
+            ProcessArgs(args);
+            ProcessConfig();
         }
 
-        private void InitFromArgs(string[] args)
+        private void ProcessArgs(string[] args)
         {
             if (args.Length != 3) throw new Exception("Config.Config(), args.Length != 3");
 
@@ -38,13 +36,18 @@ namespace Pretokenizer
             if (verbosityInt == 0) m_verbosity = VerbosityLevel.Silent;
             else if (verbosityInt == 0) m_verbosity = VerbosityLevel.Silent;
             else if (verbosityInt == 0) m_verbosity = VerbosityLevel.Silent;
-            else throw new Exception("Config.Config(), args.Length != 3");
+            else throw new Exception("Config.ProcessArgs(), args.Length != 3");
 
             var workingPath = args[1];
             var chilimakPath = args[2];
+
+            if (!Directory.Exists(workingPath))
+                throw new Exception("Config.ProcessArgs(),");
+            if (!Directory.Exists(chilimakPath))
+                throw new Exception("Config.ProcessArgs(),");
         }
 
-        private void InitFromConfig()
+        private void ProcessConfig()
         {
             var currentDir = System.IO.Directory.GetCurrentDirectory();
             if (currentDir == "p01-pretokenizer") ;
