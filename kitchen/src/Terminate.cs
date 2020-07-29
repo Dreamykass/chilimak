@@ -12,18 +12,19 @@ namespace Kitchen
 
         public static void SetChilimakRoot(String path)
         {
+            Logger.Debug("SetChilimakRoot(\"{0}\")", path);
             ChilimakRoot = path;
 
             if (!Directory.Exists(ChilimakRoot))
             {
-                Logger.Fatal("Terminate.SetChilimakRoot(String path) called.");
+                Logger.Fatal("Terminate.SetChilimakRoot(\"{0}\") called.", path);
                 Logger.Fatal("Exiting with code {0:D3}: {1}", 4, "Given Chilimak directory isn't valid.");
                 Environment.Exit(4);
             }
 
             if (!File.Exists(ChilimakRoot + "/chilimak_dir_beacon"))
             {
-                Logger.Fatal("Terminate.SetChilimakRoot(String path) called.");
+                Logger.Fatal("Terminate.SetChilimakRoot(\"{0}\") called.", path);
                 Logger.Fatal("Exiting with code {0:D3}: {1}", 5, "Given Chilimak directory is valid, but doesn't contain chilimak_dir_beacon.");
                 Environment.Exit(5);
             }
@@ -36,21 +37,24 @@ namespace Kitchen
 
             try
             {
-                var tomlDoc = Toml.Parse(ChilimakRoot + "/config/return-codes.toml");
-                var tomlTable = tomlDoc.ToModel();
-                rcodeString = (String)tomlTable[rcode.ToString()];
+                var toml_text = File.ReadAllText(ChilimakRoot + "config/return-codes.toml");
+
+                var toml_doc = Toml.Parse(toml_text);
+                var toml_table = toml_doc.ToModel();
+                rcodeString = (String)toml_table[rcode.ToString()];
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Logger.Fatal("Terminate.Now(rcode) called, encountered an error.");
                 Logger.Fatal("Exiting with code {0:D3}: {1}", 6, "Error or exception when reading or parsing return-codes.toml.");
+                Logger.Fatal("Exception message: " + e.Message);
                 Environment.Exit(6);
             }
 
             if (rcodeString == null || rcodeString == "")
             {
                 Logger.Fatal("Terminate.Now(rcode) called, encountered an error.");
-                Logger.Fatal("Exiting with code {0:D3}: {1}", 6, "Error or exception when reading or parsing return-codes.toml.");
+                Logger.Fatal("Exiting with code {0:D3}: {1}", 6, "Error or exception when reading or parsing return-codes.toml. Empty string.");
                 Environment.Exit(6);
             }
 
@@ -66,8 +70,8 @@ namespace Kitchen
 
         public static void Now(int rcode)
         {
-            Logger.Fatal("Terminate.Now(rcode) called.");
-            Logger.Fatal("Exiting with code {0:D3}: {1}", 2, GetEcodeString(rcode));
+            Logger.Fatal("Terminate.Now({0}) called.", rcode);
+            Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, GetEcodeString(rcode));
             Environment.Exit(rcode);
         }
     }

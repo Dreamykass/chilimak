@@ -12,19 +12,41 @@ namespace Kitchen
         public String workingPath;
         public String chilimakRoot;
 
-        public Config(string[] args)
+        public Config()
         {
-            if (args.Length <= 0)
-            {
-                PrintUsage();
-                throw new Exception("Launched with no commandline args.");
-            }
 
-            ProcessArgs(args);
-            ProcessConfig();
         }
 
-        private void PrintUsage()
+        public void FindChilimakRoot()
+        {
+            Logger.Info("Searching for chilimak root.");
+
+            Logger.Info("Checking hardcoded path.");
+            {
+                String hardcoded = Directory.GetCurrentDirectory() + "/../";
+                // Logger.Fatal(hardcoded);
+
+                if (File.Exists(hardcoded + "chilimak_dir_beacon"))
+                {
+                    Logger.Info("Hardcoded path to root is OK.");
+                    chilimakRoot = hardcoded;
+                    return;
+                }
+            }
+            Logger.Warn("Hardcoded path either doesn't exist or isn't root.");
+
+            Logger.Info("Going up the tree from current directory.");
+            {
+                var currentDir = Directory.GetCurrentDirectory();
+                while (Directory.Exists(currentDir))
+                {
+                    currentDir = currentDir + "/..";
+                }
+            }
+            Logger.Warn("Couldn't find root by going up the tree.");
+        }
+
+        public void PrintUsage()
         {
             Logger.Info("Running the kitchen.");
             Logger.Warn("Received no args, so printing usage:");
@@ -33,8 +55,11 @@ namespace Kitchen
             Terminate.Now(100);
         }
 
-        private void ProcessArgs(string[] args)
+        public void ProcessArgs(string[] args)
         {
+            if (args.Length <= 0)
+                PrintUsage();
+
             if (args.Length != 2) throw new Exception("Config.ProcessArgs(), args.Length != 2, ==" + args.Length.ToString());
 
             var verbosityInt = int.Parse(args[0]);
@@ -49,7 +74,7 @@ namespace Kitchen
                 throw new Exception("Config.ProcessArgs(), !Directory.Exists(" + chilimakRoot + ")");
         }
 
-        private void ProcessConfig()
+        public void ProcessConfig()
         {
             var currentDir = System.IO.Directory.GetCurrentDirectory();
             // if (currentDir == "p01-pretokenizer") ;
