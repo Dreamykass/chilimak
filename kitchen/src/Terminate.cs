@@ -12,21 +12,23 @@ namespace Kitchen
 
         public static void SetChilimakRoot(String path)
         {
-            Logger.Debug("SetChilimakRoot(\"{0}\")", path);
+            Logger.Debug("Kitchen.Terminate.SetChilimakRoot(\"{0}\")", path);
             ChilimakRoot = path;
 
             if (!Directory.Exists(ChilimakRoot))
             {
+                int rcode = 4;
                 Logger.Fatal("Terminate.SetChilimakRoot(\"{0}\") called.", path);
-                Logger.Fatal("Exiting with code {0:D3}: {1}", 4, "Given Chilimak directory isn't valid.");
-                Environment.Exit(4);
+                Logger.Fatal("Exiting with code {0:D3}: {1}", 4, "Given Chilimak root isn't valid.");
+                DefinitelyExit(rcode);
             }
 
             if (!File.Exists(ChilimakRoot + "/chilimak_dir_beacon"))
             {
+                int rcode = 5;
                 Logger.Fatal("Terminate.SetChilimakRoot(\"{0}\") called.", path);
-                Logger.Fatal("Exiting with code {0:D3}: {1}", 5, "Given Chilimak directory is valid, but doesn't contain chilimak_dir_beacon.");
-                Environment.Exit(5);
+                Logger.Fatal("Exiting with code {0:D3}: {1}", 5, "Given Chilimak root is valid, but doesn't contain chilimak_dir_beacon.");
+                DefinitelyExit(rcode);
             }
         }
 
@@ -45,17 +47,19 @@ namespace Kitchen
             }
             catch (Exception e)
             {
+                rcode = 6;
                 Logger.Fatal("Terminate.Now(rcode) called, encountered an error.");
-                Logger.Fatal("Exiting with code {0:D3}: {1}", 6, "Error or exception when reading or parsing return-codes.toml.");
+                Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Error or exception when reading or parsing return-codes.toml.");
                 Logger.Fatal("Exception message: " + e.Message);
-                Environment.Exit(6);
+                DefinitelyExit(rcode);
             }
 
             if (rcodeString == null || rcodeString == "")
             {
+                rcode = 8;
                 Logger.Fatal("Terminate.Now(rcode) called, encountered an error.");
-                Logger.Fatal("Exiting with code {0:D3}: {1}", 6, "Error or exception when reading or parsing return-codes.toml. Empty string.");
-                Environment.Exit(6);
+                Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Error when parsing return-codes.toml - got an invalid or empty string.");
+                DefinitelyExit(rcode);
             }
 
             return rcodeString;
@@ -63,15 +67,21 @@ namespace Kitchen
 
         public static void Now()
         {
+            int rcode = 2;
             Logger.Fatal("Terminate.Now() called.");
-            Logger.Fatal("Exiting with code {0:D3}: {1}", 2, "Terminated without specifying an rcode.");
-            Environment.Exit(2);
+            Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Terminated without specifying an rcode.");
+            DefinitelyExit(rcode);
         }
 
         public static void Now(int rcode)
         {
             Logger.Fatal("Terminate.Now({0}) called.", rcode);
             Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, GetEcodeString(rcode));
+            DefinitelyExit(rcode);
+        }
+
+        private static void DefinitelyExit(int rcode)
+        {
             Environment.Exit(rcode);
         }
     }

@@ -13,6 +13,7 @@ namespace Kitchen
             {
                 SetUpNLog.Now();
                 Logger.Info("Starting up the Kitchen.");
+                Console.WriteLine("Starting up the Kitchen.");
 
                 Config config = new Config();
                 config.FindChilimakRoot();
@@ -21,9 +22,10 @@ namespace Kitchen
                 config.ProcessArgs(args);
                 config.ProcessConfig();
 
-                Logger.Info("Config is ok. Verbosity level: ");
-                Logger.Debug("chilimak path: [{0}]; working path: [{1}]", config.chilimakRoot, config.workingPath);
+                Logger.Info("Config is ok.");
+                Logger.Info("Chilimak root: [{0}]; Working path: [{1}]", config.chilimakRoot, config.projectPath);
 
+                Console.WriteLine("Found Chilimak root, config ok, running the pipeline.");
             }
             catch (Exception exc)
             {

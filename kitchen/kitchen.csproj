@@ -6,5 +6,6 @@
   <ItemGroup>
     <PackageReference Include="Tomlyn" Version="0.1.2"/>
     <PackageReference Include="NLog" Version="4.7.2"/>
+    <PackageReference Include="CommandLineParser" Version="2.8.0"/>
   </ItemGroup>
 </Project>

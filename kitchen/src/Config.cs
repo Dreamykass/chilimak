@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Tomlyn;
 using NLog;
+using CommandLine;
 
 namespace Kitchen
 {
@@ -9,13 +9,8 @@ namespace Kitchen
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public String workingPath;
+        public String projectPath;
         public String chilimakRoot;
-
-        public Config()
-        {
-
-        }
 
         public void FindChilimakRoot()
         {
@@ -55,29 +50,22 @@ namespace Kitchen
             Terminate.Now(100);
         }
 
+        private class CmdOptions
+        {
+            [Option('p', "proj", Required = true, HelpText = "Project path to work on, that contains a 'kitchen-recipe.toml'.")]
+            public String ProjectDir { get; set; }
+        }
+
         public void ProcessArgs(string[] args)
         {
             if (args.Length <= 0)
                 PrintUsage();
 
-            if (args.Length != 2) throw new Exception("Config.ProcessArgs(), args.Length != 2, ==" + args.Length.ToString());
 
-            var verbosityInt = int.Parse(args[0]);
-
-            var workingPath = args[1];
-            if (!Directory.Exists(workingPath))
-                throw new Exception("Config.ProcessArgs(), !Directory.Exists(" + workingPath + ")");
-
-            var currentDir = System.IO.Directory.GetCurrentDirectory();
-            chilimakRoot = currentDir + "/../";
-            if (!Directory.Exists(chilimakRoot))
-                throw new Exception("Config.ProcessArgs(), !Directory.Exists(" + chilimakRoot + ")");
         }
 
         public void ProcessConfig()
         {
-            var currentDir = System.IO.Directory.GetCurrentDirectory();
-            // if (currentDir == "p01-pretokenizer") ;
 
         }
 

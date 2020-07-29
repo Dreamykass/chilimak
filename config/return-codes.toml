@@ -8,6 +8,7 @@
 005 = "Given Chilimak directory is valid, but doesn't contain chilimak_dir_beacon."
 006 = "Error or exception when reading or parsing return-codes.toml."
 007 = "Couldn't find an error code in return-codes.toml."
+008 = "Error or exception when searching for an rcode in return-codes.toml."
 011 = "Can't find"
 
 # driver rcodes
