@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Tomlyn" Version="0.1.2"/>
+    <PackageReference Include="NLua" Version="1.5.0"/>
     <PackageReference Include="NLog" Version="4.7.2"/>
     <PackageReference Include="CommandLineParser" Version="2.8.0"/>
   </ItemGroup>

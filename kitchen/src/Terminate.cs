@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using NLog;
-using Tomlyn;
+using NLua;
 
 namespace Kitchen
 {
@@ -35,21 +35,43 @@ namespace Kitchen
         private static String GetEcodeString(int rcode)
         {
             SetChilimakRoot(ChilimakRoot);
-            String rcodeString = "";
+            string rcodeString = "";
+            bool rcodeStringSet = false;
 
             try
             {
-                var toml_text = File.ReadAllText(ChilimakRoot + "config/return-codes.toml");
+                var script_string = File.ReadAllText(ChilimakRoot + "config/return-codes.lua");
+                var luaState = new Lua();
+                luaState.DoString(script_string);
 
-                var toml_doc = Toml.Parse(toml_text);
-                var toml_table = toml_doc.ToModel();
-                rcodeString = (String)toml_table[rcode.ToString()];
+                var luaGlobals = luaState.Globals;
+                foreach (var tableName in luaGlobals)
+                {
+                    Logger.Warn(tableName);
+
+                    var table = luaState.GetTable(tableName);
+
+                    if (table[rcode] != null)
+                    {
+                        if (rcodeStringSet)
+                        {
+                            rcode = 11;
+                            Logger.Fatal("Terminate.Now({0}) called.", rcode);
+                            Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Duplicate rcode found in return-codes.lua.");
+                            DefinitelyExit(rcode);
+                        }
+                        else
+                        {
+                            rcodeString = table[rcode] as string;
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
                 rcode = 6;
                 Logger.Fatal("Terminate.Now(rcode) called, encountered an error.");
-                Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Error or exception when reading or parsing return-codes.toml.");
+                Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Error or exception when reading or parsing return-codes.lua.");
                 Logger.Fatal("Exception message: " + e.Message);
                 DefinitelyExit(rcode);
             }
@@ -58,7 +80,7 @@ namespace Kitchen
             {
                 rcode = 8;
                 Logger.Fatal("Terminate.Now(rcode) called, encountered an error.");
-                Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Error when parsing return-codes.toml - got an invalid or empty string.");
+                Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Error when parsing return-codes.lua - got an invalid or empty string.");
                 DefinitelyExit(rcode);
             }
 
