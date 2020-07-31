@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using NLog;
 
 namespace Kitchen
@@ -13,19 +14,53 @@ namespace Kitchen
             {
                 SetUpNLog.Now();
                 Logger.Info("Starting up the Kitchen.");
-                Console.WriteLine("Starting up the Kitchen.");
 
                 Config config = new Config();
                 config.FindChilimakRoot();
                 Terminate.SetChilimakRoot(config.chilimakRoot);
 
                 config.ProcessArgs(args);
+                config.LoadPipelineSteps();
+
                 config.ProcessConfig();
+
+                foreach (var step in config.pipelineSteps)
+                {
+                    var proc = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = step.GetValidPath(),
+                            Arguments = "",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            CreateNoWindow = true
+                        }
+                    };
+
+                    proc.Start();
+
+                    while (!proc.StandardOutput.EndOfStream)
+                    {
+                        string line = proc.StandardOutput.ReadLine();
+                        // do something with line
+                        Console.WriteLine(line);
+                    }
+
+                    if (proc.ExitCode == 0)
+                    {
+                        Logger.Warn("Step '{0}' finished OK.", step.Name);
+                    }
+                    else
+                    {
+                        Logger.Fatal("Step '{0}' failed with {1}.", step.Name, proc.ExitCode);
+                        Terminate.Now(proc.ExitCode);
+                    }
+                }
 
                 Logger.Info("Config is ok.");
                 Logger.Info("Chilimak root: [{0}]; Working path: [{1}]", config.chilimakRoot, config.projectPath);
 
-                Console.WriteLine("Found Chilimak root, config ok, running the pipeline.");
             }
             catch (Exception exc)
             {

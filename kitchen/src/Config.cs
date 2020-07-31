@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using NLog;
 using CommandLine;
 
@@ -11,15 +12,15 @@ namespace Kitchen
 
         public String projectPath;
         public String chilimakRoot;
+        public List<PipelineStep> pipelineSteps;
 
         public void FindChilimakRoot()
         {
             Logger.Info("Searching for chilimak root.");
 
-            Logger.Info("Checking hardcoded path.");
+            Logger.Info("Checking hardcoded paths.");
             {
                 String hardcoded = Directory.GetCurrentDirectory() + "/../";
-                // Logger.Fatal(hardcoded);
 
                 if (File.Exists(hardcoded + "chilimak_dir_beacon"))
                 {
@@ -36,6 +37,12 @@ namespace Kitchen
                 while (Directory.Exists(currentDir))
                 {
                     currentDir = currentDir + "/..";
+                    if (File.Exists(currentDir + "/chilimak_dir_beacon"))
+                    {
+                        Logger.Info("Root found by going up the tree.");
+                        chilimakRoot = currentDir + "/";
+                        return;
+                    }
                 }
             }
             Logger.Warn("Couldn't find root by going up the tree.");
@@ -61,6 +68,63 @@ namespace Kitchen
             if (args.Length <= 0)
                 PrintUsage();
 
+            Parser.Default.ParseArguments<CmdOptions>(args)
+            .WithParsed<CmdOptions>(o =>
+            {
+                if (o.ProjectDir != null)
+                {
+                    projectPath = o.ProjectDir + "/";
+                    Logger.Info("Received option 'proj': " + projectPath);
+
+                    if (!Directory.Exists(projectPath))
+                        Terminate.Now(101);
+
+                    if (!File.Exists(projectPath + "/kitchen-recipe.lua"))
+                        Terminate.Now(102);
+                }
+            });
+
+        }
+
+        public void LoadPipelineSteps()
+        {
+            try
+            {
+                pipelineSteps = new List<PipelineStep>();
+
+                var scriptStr = File.ReadAllText(chilimakRoot + "/config/kitchen-pipeline.lua");
+
+                var luaState = new NLua.Lua();
+                luaState.DoString(scriptStr);
+
+                var tablePipelineSteps = luaState.GetTable("PipelineSteps");
+
+                foreach (KeyValuePair<object, object> itemKVP in tablePipelineSteps)
+                {
+                    var step = new PipelineStep();
+
+                    var stepInTable = itemKVP.Value as NLua.LuaTable;
+
+                    step.Name = stepInTable["Name"] as String;
+                    Logger.Info("Step name: " + step.Name + ". Possible paths:");
+
+                    var pathsTable = stepInTable["PossiblePaths"] as NLua.LuaTable;
+                    foreach (KeyValuePair<object, object> pathKVP in pathsTable)
+                    {
+                        var pathStr = pathKVP.Value as String;
+                        Logger.Info("    " + pathStr);
+                        step.PossiblePaths.Add(pathStr);
+                    }
+
+                    pipelineSteps.Add(step);
+                }
+
+            }
+            catch (Exception exc)
+            {
+                Logger.Fatal(exc);
+                Terminate.Now(103);
+            }
 
         }
 

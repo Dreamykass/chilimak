@@ -32,40 +32,19 @@ namespace Kitchen
             }
         }
 
-        private static String GetEcodeString(int rcode)
+        public static String GetStringFromRcode(int rcode)
         {
-            SetChilimakRoot(ChilimakRoot);
             string rcodeString = "";
-            bool rcodeStringSet = false;
 
             try
             {
+                SetChilimakRoot(ChilimakRoot);
+
                 var script_string = File.ReadAllText(ChilimakRoot + "config/return-codes.lua");
                 var luaState = new Lua();
                 luaState.DoString(script_string);
 
-                var luaGlobals = luaState.Globals;
-                foreach (var tableName in luaGlobals)
-                {
-                    Logger.Warn(tableName);
-
-                    var table = luaState.GetTable(tableName);
-
-                    if (table[rcode] != null)
-                    {
-                        if (rcodeStringSet)
-                        {
-                            rcode = 11;
-                            Logger.Fatal("Terminate.Now({0}) called.", rcode);
-                            Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, "Duplicate rcode found in return-codes.lua.");
-                            DefinitelyExit(rcode);
-                        }
-                        else
-                        {
-                            rcodeString = table[rcode] as string;
-                        }
-                    }
-                }
+                rcodeString = luaState.GetTable("ReturnCodes")[rcode] as String;
             }
             catch (Exception e)
             {
@@ -98,7 +77,7 @@ namespace Kitchen
         public static void Now(int rcode)
         {
             Logger.Fatal("Terminate.Now({0}) called.", rcode);
-            Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, GetEcodeString(rcode));
+            Logger.Fatal("Exiting with code {0:D3}: {1}", rcode, GetStringFromRcode(rcode));
             DefinitelyExit(rcode);
         }
 

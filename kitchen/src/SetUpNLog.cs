@@ -14,7 +14,9 @@ namespace Kitchen
 
             config.AddRule(LogLevel.Info, LogLevel.Fatal, logconsole);
 
-            logconsole.Layout = "${longdate}|${level:uppercase=true}|${logger}|---|${message}";
+            // logconsole.Layout = "${date:format=HH\\:mm\\:ss\\:fff}|${level:uppercase=true}|${logger}|---|${message}";
+
+            logconsole.Layout = "${date:format=HH\\:mm\\:ss\\:fff}|${level:uppercase=true:padding=-5}|---|${logger}|${message}";
 
             NLog.LogManager.Configuration = config;
 
