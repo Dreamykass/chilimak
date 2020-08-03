@@ -24,13 +24,14 @@ namespace Kitchen
                 var currentDir = Directory.GetCurrentDirectory();
                 while (Directory.Exists(currentDir))
                 {
-                    currentDir = currentDir + "/..";
                     if (File.Exists(currentDir + "/chilimak_dir_beacon"))
                     {
                         Logger.Info("Root found by going up the tree.");
                         chilimakRoot = currentDir + "/";
                         return;
                     }
+
+                    currentDir = currentDir + "/..";
                 }
             }
             Logger.Warn("Couldn't find root by going up the tree.");
