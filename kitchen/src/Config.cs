@@ -17,19 +17,7 @@ namespace Kitchen
         public void FindChilimakRoot()
         {
             Logger.Info("Searching for chilimak root.");
-
-            Logger.Info("Checking hardcoded paths.");
-            {
-                String hardcoded = Directory.GetCurrentDirectory() + "/../";
-
-                if (File.Exists(hardcoded + "chilimak_dir_beacon"))
-                {
-                    Logger.Info("Hardcoded path to root is OK.");
-                    chilimakRoot = hardcoded;
-                    return;
-                }
-            }
-            Logger.Warn("Hardcoded path either doesn't exist or isn't root.");
+            Logger.Info("Current directory: {0}.", Directory.GetCurrentDirectory());
 
             Logger.Info("Going up the tree from current directory.");
             {
@@ -46,6 +34,19 @@ namespace Kitchen
                 }
             }
             Logger.Warn("Couldn't find root by going up the tree.");
+
+            Logger.Info("Checking hardcoded paths.");
+            {
+                String hardcoded = Directory.GetCurrentDirectory() + "/../";
+
+                if (File.Exists(hardcoded + "chilimak_dir_beacon"))
+                {
+                    Logger.Info("Hardcoded path to root is OK.");
+                    chilimakRoot = hardcoded;
+                    return;
+                }
+            }
+            Logger.Warn("Hardcoded path either doesn't exist or isn't root.");
         }
 
         public void PrintUsage()
