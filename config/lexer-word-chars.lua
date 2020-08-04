@@ -1,0 +1,9 @@
+
+Keywords = {
+    "let",
+}
+
+Operators = {
+    "=",
+}
+

@@ -4,11 +4,12 @@ using NLog;
 using CommandLine;
 using MoonSharp.Interpreter;
 
-namespace lexer
+namespace Lexer
 {
     class Program
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public class CmdOptions
         {
             [Option('p', "proj", Required = true, HelpText = "Project directory to work on, that contains a 'kitchen-recipe.toml'.")]
@@ -58,23 +59,22 @@ namespace lexer
                 });
             }
         }
+        public static CmdOptions Config { get; set; }
 
         static int Main(string[] args)
         {
             try
             {
-                CmdOptions options = new CmdOptions();
-                options.ProcessArgs(args);
+                Config = new CmdOptions();
+                Config.ProcessArgs(args);
                 Logger.Info("Lexer starts.");
-                Console.WriteLine("SIEMA");
+                var foo = ReadAllSources.Now();
+
             }
             catch (Exception exc)
             {
-                // Logger.Fatal(exc, "Exception caught at Parser Main.");
-                Console.WriteLine("Exception caught at Parser Main: " + exc.Message);
-
+                Logger.Fatal(exc, "Exception caught at Parser Main. Message: " + exc.Message);
             }
-            Logger.Fatal("Narka.");
             return 0;
         }
     }

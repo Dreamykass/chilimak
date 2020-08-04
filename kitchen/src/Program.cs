@@ -26,20 +26,19 @@ namespace Kitchen
 
                 foreach (var step in config.pipelineSteps)
                 {
-                    Logger.Fatal("valid::::: " + step.GetValidPath());
-
                     var proc = new Process
                     {
                         StartInfo = new ProcessStartInfo
                         {
                             Arguments = "-p \"" + config.projectPath + "\" -c \"" + config.chilimakRoot + "\"",
-                            // UseShellExecute = true,
-                            // RedirectStandardOutput = true,
-                            // CreateNoWindow = true
-                            UseShellExecute = true,
-                            CreateNoWindow = false,
-                            WindowStyle = ProcessWindowStyle.Normal,
                             FileName = step.GetValidPath(),
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            CreateNoWindow = true
+                            // UseShellExecute = true,
+                            // CreateNoWindow = false,
+                            // WindowStyle = ProcessWindowStyle.Normal,
+                            // FileName = step.GetValidPath(),
                         }
                     };
 

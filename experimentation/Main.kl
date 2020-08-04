@@ -1,0 +1,8 @@
+
+// line comment
+  // line comment
+    // line comment
+
+let foo = 15;
+foo = add(foo, 5);
+ret foo;
