@@ -28,14 +28,32 @@ chilimak_add_dependencies_to_target(chilimak_core)
 
 
 # -----------------------------------------------------------------------------
+# ------------------------- generator
+
+add_executable(chilimak_generator
+    ${CMAKE_SOURCE_DIR}/generator/_gen_main.cpp
+    ${CMAKE_SOURCE_DIR}/generator/abnf2pegtl.hpp
+    )
+target_include_directories(chilimak_generator 
+    PRIVATE ${CMAKE_SOURCE_DIR}/generator
+    )
+
+dkass_set_compile_options(chilimak_generator)
+chilimak_add_dependencies_to_target(chilimak_generator)
+
+target_link_libraries(chilimak_generator PRIVATE chilimak_core)
+target_include_directories(chilimak_generator PRIVATE ${CHILI_CORE_INCLUDE_DIRS})
+
+
+# -----------------------------------------------------------------------------
 # ------------------------- tests
 
-add_executable(first_test ${CMAKE_SOURCE_DIR}/tests/00-driver/_main.cpp)
-add_test(NAME first_test COMMAND first_test)
+# add_executable(first_test ${CMAKE_SOURCE_DIR}/tests/00-driver/_main.cpp)
+# add_test(NAME first_test COMMAND first_test)
 
-target_include_directories(first_test PRIVATE ${CHILI_CORE_INCLUDE_DIRS})
-dkass_set_compile_options(chilimak_core)
-chilimak_add_dependencies_to_target(chilimak_core)
+# target_include_directories(first_test PRIVATE ${CHILI_CORE_INCLUDE_DIRS})
+# dkass_set_compile_options(chilimak_core)
+# chilimak_add_dependencies_to_target(chilimak_core)
 
 
 # -----------------------------------------------------------------------------

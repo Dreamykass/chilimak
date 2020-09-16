@@ -1,4 +1,10 @@
+#pragma once
+
+#include <string>
 
 namespace driver {
-  int HelloWorld() { return -1; }
+
+  void InitSpdlog();
+  const std::string FindRootDirectory();
+
 }

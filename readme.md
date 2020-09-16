@@ -3,9 +3,7 @@
 
 This will hopefully some day be a compiler for kasserole, targeting LLVM IR.
 
-Development will happen on the branches.
+## Docs.
 
-## Dependencies.
-
-In the `dependencies` directory.
+In the `docs` directory. This includes dependencies of Chilimak.
 
