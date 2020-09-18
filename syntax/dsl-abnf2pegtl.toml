@@ -1,0 +1,17 @@
+
+"BEGOF" = "tao::pegtl::bof"
+"ENDOF" = "tao::pegtl::eof"
+"BEGOL" = "tao::pegtl::bol"
+"ENDOL" = "tao::pegtl::eol"
+"ENDOLF" = "tao::pegtl::eolf"
+
+"ALPHANUM" = "tao::pegtl::alnum"
+"ALPHAB" = "tao::pegtl::alpha"
+"DIGIT" = "tao::pegtl::digit"
+"XDIGIT" = "tao::pegtl::xdigit"
+"PRINTABLE" = "tao::pegtl::print"
+
+"DQUOTE" = "tao::pegtl::quotation_mark"
+
+"UNDERSC" = "tao::pegtl::string<'_'>"
+"ARROWR" = "tao::pegtl::string<'-', '>'>"

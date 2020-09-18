@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <regex>
+#include <toml++/toml.h>
 
 int main() {
   driver::InitSpdlog();
@@ -21,7 +23,9 @@ int main() {
 
   file_input in(grammar_filename);
   std::stringstream output_sstream;
+  std::string output_string;
 
+  // -------------------------------------------- parsing
   try {
     const auto root = parse_tree::
       parse<abnf::grammar::rulelist, abnf::selector, nothing, abnf::control>(
@@ -38,8 +42,8 @@ int main() {
       output_sstream << abnf::to_string(rule) << '\n';
     }
     SPDLOG_INFO("saved to stream");
-
-  } catch (const parse_error& e) {
+  }
+  catch (const parse_error& e) {
     SPDLOG_CRITICAL("generating/parsing error");
     const auto p = e.positions().front();
     std::cerr << e.what() << '\n'
@@ -49,6 +53,29 @@ int main() {
     std::terminate();
   }
 
+  output_string = output_sstream.str();
+
+  // -------------------------------------------- replacing
+  {
+    auto replacer = [&](std::string bad, std::string good) {
+      auto rexpr = std::regex(fmt::format("{}", bad));
+      output_string = std::regex_replace(output_string, rexpr, good);
+    };
+
+    auto tomlt_path = root_dir + "/syntax/dsl-abnf2pegtl.toml";
+    if (!std::filesystem::exists(tomlt_path)) {
+      SPDLOG_CRITICAL("{} doesn't exist", tomlt_path);
+      SPDLOG_CRITICAL("terminating...");
+      std::terminate();
+    }
+
+    auto tomlt = toml::parse_file(tomlt_path);
+
+    for (const auto& i : tomlt) {
+      replacer(i.first, i.second.ref<std::string>());
+    }
+  }
+  // -------------------------------------------- saving to file
   try {
     auto target_filename = root_dir + "syntax/kasserole.hpp";
 
@@ -59,13 +86,14 @@ int main() {
     output_file << "#pragma once\n";
     output_file << "#include <tao/pegtl.hpp>\n";
     output_file << "\n";
-    output_file << output_sstream.rdbuf();
+    output_file << output_string;
     output_file << "\n";
 
     SPDLOG_INFO("saved");
-
-  } catch (const std::exception& e) {
+  }
+  catch (const std::exception& e) {
     SPDLOG_CRITICAL("generating/saving error");
+    SPDLOG_CRITICAL("exception: {}", e.what());
     SPDLOG_CRITICAL("terminating...");
     std::terminate();
   }
