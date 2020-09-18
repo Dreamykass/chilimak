@@ -22,7 +22,7 @@ include(${CMAKE_SOURCE_DIR}/scripts/set-coverage-files.cmake)
 # -----------------------------------------------------------------------------
 # ------------------------- core library
 
-add_library(chilimak_core SHARED ${CHILI_CORE_CPP_FILES} ${CHILI_CORE_HPP_FILES})
+add_library(chilimak_core ${CHILI_CORE_CPP_FILES} ${CHILI_CORE_HPP_FILES})
 
 target_include_directories(chilimak_core PRIVATE ${CHILI_CORE_INCLUDE_DIRS})
 dkass_set_compile_options(chilimak_core)

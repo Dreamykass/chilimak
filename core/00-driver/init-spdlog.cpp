@@ -39,7 +39,7 @@ void driver::InitSpdlog(spdlog::level::level_enum _con_level,
 
   spdlog::register_logger(combined_logger);
   spdlog::set_default_logger(combined_logger);
-  spdlog::set_pattern("[%T.%e]%^ [%=8l] %$[%24s:%3#] %v");
+  spdlog::set_pattern("[%T.%e] [p%P/t%t]%^ [%=8l] %$[%24s:%3#] %v");
   spdlog::set_level(spdlog::level::trace);
 
   SPDLOG_INFO("spdlog initalized");

@@ -19,5 +19,5 @@ std::string driver::FindRootDirectory() {
   SPDLOG_CRITICAL("driver::FindRootDirectory(), cannot find the root");
   SPDLOG_CRITICAL("current_path(): {}", current);
   SPDLOG_CRITICAL("terminating...");
-  std::terminate();
+  driver::TerminateOnNoRootDirectory();
 }
