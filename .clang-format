@@ -1,9 +1,0 @@
-﻿---
-BasedOnStyle: Mozilla
-NamespaceIndentation: All
-AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
-BreakBeforeBraces: Custom
-BraceWrapping:
-  BeforeCatch: true
-SortIncludes: false

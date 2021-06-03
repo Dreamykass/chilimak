@@ -1,4 +1,0 @@
-
-fun Main()->Int {
-    ret 0;
-};
