@@ -1,0 +1,2 @@
+fun main()->I32
+{ ret 7; }
