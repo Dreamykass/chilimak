@@ -1,0 +1,4 @@
+[
+  Identifier("fun"), Identifier("main"), ParenL, ParenR, ArrowR, Identifier("I32"),
+  BraceL, Identifier("ret"), LiteralNumber(7), SemiColon, BraceR
+]

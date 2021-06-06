@@ -13,7 +13,8 @@ members = [
 #common = "common"
 
 [dev-dependencies]
-walkdir = "2.3.2"
 common = {path = "common"}
-serde_json = "1.0.64"
+walkdir = "2.3.2"
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.64"
+ron = "0.6.4"

@@ -1,2 +1,3 @@
 fun main()->I32
+/* this is a comment */
 { ret 7; }
