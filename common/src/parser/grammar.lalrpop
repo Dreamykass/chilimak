@@ -1,5 +1,5 @@
 
-grammar;
+grammar<'source>(file_id: usize, messages: &mut Vec<String>);
 
 extern {
     type Error = ();
