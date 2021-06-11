@@ -1,14 +1,6 @@
-use std::ops::Range;
-
-#[derive(Debug, PartialEq, Clone, serde::Serialize, serde::Deserialize)]
-pub struct Token {
-    pub kind: TokenKind,
-    pub span: Range<usize>,
-}
-
 #[derive(logos::Logos, Debug, PartialEq, Clone, serde::Serialize, serde::Deserialize)]
 #[rustfmt::skip]
-pub enum TokenKind {
+pub enum Token {
     #[error] #[regex(r"[ \t\r\n\f]+", logos::skip)] Error,
 
     #[token(".")] Dot, #[token(",")] Comma,
@@ -21,8 +13,7 @@ pub enum TokenKind {
 
     #[token("<-")] ArrowL, #[token("->")] ArrowR,
 
-    #[token("fun")] KwFun,
-    #[token("ret")] KwRet,
+    #[token("fun")] KwFun, #[token("ret")] KwRet,
 
     #[regex(r#"(_|[A-Za-z])([A-Za-z]|_|\d)*"#, |lexer| lexer.slice()[..].trim_end().to_owned())] 
     Identifier(String),

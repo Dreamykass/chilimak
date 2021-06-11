@@ -5,9 +5,7 @@ pub enum Expression {
     LiteralExpression(LiteralExpression),
 }
 
-
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LiteralExpression {
-    value: i32,
+    pub value: i32,
 }
