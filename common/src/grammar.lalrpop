@@ -8,22 +8,39 @@ extern {
     type Location = usize;
 
     enum Token {
-        Dot => Token::Dot,      Comma => Token::Comma,
-        Colon => Token::Colon,  SemiColon => Token::SemiColon,
+        Dot => Token::Dot,      Comma => Token::Comma,          // . ,
+        Colon => Token::Colon,  SemiColon => Token::SemiColon,  // : ;
     
-        ParenL => Token::ParenL,    ParenR => Token::ParenR,
-        BraceL => Token::BraceL,    BraceR => Token::BraceR, 
-        AngleL => Token::AngleL,    AngleR => Token::AngleR,
-        SquareL => Token::SquareL,  SquareR => Token::SquareR,
+        ParenL => Token::ParenL,    ParenR => Token::ParenR,    // ( )
+        BraceL => Token::BraceL,    BraceR => Token::BraceR,    // { }
+        AngleL => Token::AngleL,    AngleR => Token::AngleR,    // < >
+        SquareL => Token::SquareL,  SquareR => Token::SquareR,  // [ ]
     
-        ArrowL => Token::ArrowL, ArrowR => Token::ArrowR,
+        ArrowL => Token::ArrowL, ArrowR => Token::ArrowR,       // <- ->
     
-        Identifier => Token::Identifier(String),
+        Identifier => Token::Identifier(<String>),
     
-        LiteralNumber => Token::LiteralNumber(i32),
+        LiteralNumber => Token::LiteralNumber(<i32>),
     }
 }
 
-pub DefinitionList: Vec<Definition> = {
-    LiteralNumber => vec![],
+
+
+pub FunctionDefinition: definition::FunctionDefinition = {
+    Identifier <n:Identifier> ParenL ParenR ArrowR Identifier
+    BraceL Identifier LiteralNumber SemiColon BraceR
+    => definition::FunctionDefinition {
+        name: n.to_string(),
+        return_type_name: "".to_string(),
+        body: vec![],
+    }
 }
+
+pub Definition: Definition = {
+    FunctionDefinition => Definition::FunctionDefinition(<>),
+}
+
+pub DefinitionList: Vec<Definition> = {
+    Definition+
+}
+

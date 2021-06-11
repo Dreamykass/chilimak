@@ -6,14 +6,15 @@ fn test_runner() {
         let entry = entry.unwrap();
         let path = entry.path().to_string_lossy();
 
+        // if file is a kasserole source
         if path.ends_with(".kl") {
             let source = std::fs::read_to_string(&*path).unwrap();
-            let lexer_output_test = std::fs::read_to_string(path.to_string() + ".lex.ron");
+            let lexer_output = common::lexer::lex(&source);
+            let parser_output = common::parser::parse(&lexer_output);
 
-            if let Ok(lexer_output_test) = lexer_output_test {
+            // lexer output test
+            if let Ok(lexer_output_test) = std::fs::read_to_string(path.to_string() + ".lex.ron") {
                 println!("--lex test: {}", path);
-
-                let lexer_output = common::lexer::lex(&source);
 
                 assert_eq!(
                     lexer_output,
@@ -23,6 +24,12 @@ fn test_runner() {
                     path
                 );
             }
+
+            // println!("{}", ron::to_string(&parser_output.unwrap()).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&parser_output.unwrap()).unwrap()
+            );
         }
     }
 }

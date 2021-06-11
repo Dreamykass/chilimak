@@ -1,16 +1,16 @@
+use crate::ast::Definition;
 use crate::lexer::token::Token;
 use lalrpop_util::lalrpop_mod;
 
 lalrpop_mod!(pub grammar);
 
-// #[allow(clippy::style, clippy::complexity, clippy::perf)]
-// mod grammar {
-//     include!(concat!(env!("OUT_DIR"), "/grammar.rs"));
-// }
+pub type ParserError = lalrpop_util::ParseError<usize, Token, ()>;
 
-pub fn parse(tokens: Vec<Token>) {
-    let tokens: Vec<(usize, Token, usize)> =
-        tokens.into_iter().map(|t| (0usize, t, 0usize)).collect();
-    let ast = grammar::DefinitionListParser::new().parse(tokens);
-    println!("{:?}", ast);
+pub fn parse(tokens: &[Token]) -> Result<Vec<Definition>, ParserError> {
+    let tokens: Vec<(usize, Token, usize)> = tokens
+        .iter()
+        .cloned()
+        .map(|t| (0usize, t, 0usize))
+        .collect();
+    grammar::DefinitionListParser::new().parse(tokens)
 }
