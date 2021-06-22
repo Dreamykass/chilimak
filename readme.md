@@ -7,4 +7,5 @@ Chilimak really just a fun side-side-side-project
 (where kasserole is just a fun side-side-project).
 
 # commands
-`cargo test --workspace`
+`cargo test --workspace` - to run all tests
+`clang -S -emit-llvm source.cpp` - to emit LLVM IR

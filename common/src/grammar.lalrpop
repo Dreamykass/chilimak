@@ -10,17 +10,17 @@ extern {
     type Location = usize;
 
     enum Token {
-        Dot => Token::Dot,      Comma => Token::Comma,          // . ,
-        Colon => Token::Colon,  SemiColon => Token::SemiColon,  // : ;
+        "." => Token::Dot,      "," => Token::Comma,          // . ,
+        ":" => Token::Colon,  ";" => Token::SemiColon,  // : ;
     
-        ParenL => Token::ParenL,    ParenR => Token::ParenR,    // ( )
-        BraceL => Token::BraceL,    BraceR => Token::BraceR,    // { }
-        AngleL => Token::AngleL,    AngleR => Token::AngleR,    // < >
-        SquareL => Token::SquareL,  SquareR => Token::SquareR,  // [ ]
+        "(" => Token::ParenL,    ")" => Token::ParenR,    // ( )
+        "{" => Token::BraceL,    "}" => Token::BraceR,    // { }
+        "<" => Token::AngleL,    ">" => Token::AngleR,    // < >
+        "[" => Token::SquareL,  "]" => Token::SquareR,  // [ ]
     
-        ArrowL => Token::ArrowL, ArrowR => Token::ArrowR,       // <- ->
+        "<-" => Token::ArrowL, "->" => Token::ArrowR,       // <- ->
 
-        KwFun => Token::KwFun, KwRet => Token::KwRet,           // fun ret
+        "fun" => Token::KwFun, "ret" => Token::KwRet,           // fun ret
     
         Identifier => Token::Identifier(<String>),
     
@@ -45,7 +45,7 @@ Expression: Expression = {
 // -------------------------------------------------------- statements:
 
 ReturnStatement: Statement = {
-    KwRet <Expression> SemiColon => Statement::ReturnStatement(<>),
+    "ret" <Expression> ";" => Statement::ReturnStatement(<>),
 }
 
 Statement: Statement = {
@@ -55,8 +55,8 @@ Statement: Statement = {
 // -------------------------------------------------------- definitions:
 
 pub FunctionDefinition: definition::FunctionDefinition = {
-    KwFun <n:Identifier> ParenL ParenR ArrowR Identifier
-    BraceL <s:Statement> BraceR
+    "fun" <n:Identifier> "(" ")" "->" Identifier
+    "{" <s:Statement> "}"
     => definition::FunctionDefinition {
         name: n.to_string(),
         return_type_name: "".to_string(),
